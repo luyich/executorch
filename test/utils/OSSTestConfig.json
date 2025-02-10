@@ -32,6 +32,13 @@
         ]
     },
     {
+        "directory": "extension/llm/tokenizer/test",
+        "sources": [
+            "test_bpe_tokenizer.cpp",
+            "test_tiktoken.cpp"
+        ]
+    },
+    {
         "directory": "extension/memory_allocator/test",
         "sources": [
             "malloc_memory_allocator_test.cpp"

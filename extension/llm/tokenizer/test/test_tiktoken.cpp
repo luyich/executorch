@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#ifdef EXECUTORCH_FB_BUCK
-#include <TestResourceUtils/TestResourceUtils.h>
-#endif
+// #ifdef EXECUTORCH_FB_BUCK
+// #include <TestResourceUtils/TestResourceUtils.h>
+// #endif
 #include <executorch/extension/llm/tokenizer/tiktoken.h>
 #include <executorch/runtime/platform/runtime.h>
 #include <gmock/gmock.h>
@@ -50,13 +50,15 @@ static inline std::unique_ptr<std::vector<std::string>> _get_special_tokens() {
   return special_tokens;
 }
 
-static inline std::string _get_resource_path(const std::string& name) {
-#ifdef EXECUTORCH_FB_BUCK
-  return facebook::xplat::testing::getPathForTestResource("resources/" + name);
-#else
-  return std::getenv("RESOURCES_PATH") + std::string("/") + name;
-#endif
-}
+// static inline std::string _get_resource_path(const std::string& name) {
+//   return std::get_env(name);
+// #ifdef EXECUTORCH_FB_BUCK
+//   return facebook::xplat::testing::getPathForTestResource("resources/" +
+//   name);
+// #else
+//   return std::getenv("RESOURCES_PATH") + std::string("/") + name;
+// #endif
+// }
 
 } // namespace
 
@@ -66,7 +68,7 @@ class TiktokenExtensionTest : public Test {
     executorch::runtime::runtime_init();
     tokenizer_ = std::make_unique<Tiktoken>(
         _get_special_tokens(), kBOSTokenIndex, kEOSTokenIndex);
-    modelPath_ = _get_resource_path("test_tiktoken_tokenizer.model");
+    modelPath_ = std::get_env("TEST_TIKTOKEN_TOKENIZER");
   }
 
   std::unique_ptr<Tokenizer> tokenizer_;
@@ -160,30 +162,28 @@ TEST_F(TiktokenExtensionTest, LoadWithInvalidPath) {
 }
 
 TEST_F(TiktokenExtensionTest, LoadTiktokenFileWithInvalidRank) {
-  auto invalidModelPath =
-      _get_resource_path("test_tiktoken_invalid_rank.model");
+  auto invalidModelPath = std::get_env("TEST_TIKTOKEN_INVALID_RANK");
   Error res = tokenizer_->load(invalidModelPath.c_str());
 
   EXPECT_EQ(res, Error::InvalidArgument);
 }
 
 TEST_F(TiktokenExtensionTest, LoadTiktokenFileWithInvalidBase64) {
-  auto invalidModelPath =
-      _get_resource_path("test_tiktoken_invalid_base64.model");
+  auto invalidModelPath = std::get_env("TEST_TIKTOKEN_INVALID_BASE64");
   Error res = tokenizer_->load(invalidModelPath.c_str());
 
   EXPECT_EQ(res, Error::InvalidArgument);
 }
 
 TEST_F(TiktokenExtensionTest, LoadTiktokenFileWithNoSpace) {
-  auto invalidModelPath = _get_resource_path("test_tiktoken_no_space.model");
-  Error res = tokenizer_->load(invalidModelPath.c_str());
+  auto invalidModelPath = std::get_env("TEST_TIKTOKEN_NO_SPACE") Error res =
+      tokenizer_->load(invalidModelPath.c_str());
 
   EXPECT_EQ(res, Error::InvalidArgument);
 }
 
 TEST_F(TiktokenExtensionTest, LoadTiktokenFileWithBPEFile) {
-  auto invalidModelPath = _get_resource_path("test_bpe_tokenizer.bin");
+  auto invalidModelPath = std::get_env("TEST_BPE_TOKENIZER");
   Error res = tokenizer_->load(invalidModelPath.c_str());
 
   EXPECT_EQ(res, Error::InvalidArgument);

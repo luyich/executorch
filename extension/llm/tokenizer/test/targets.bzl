@@ -7,6 +7,14 @@ def define_common_targets():
     TARGETS and BUCK files that call this function.
     """
 
+    test_env = {
+        "TEST_BPE_TOKENIZER": "$(location //executorch/extension/llm/tokenizer/test/resources/test_bpe_tokenizer.bin"
+        "TEST_TIKTOKEN_INVALID_BASE64": "$(location //executorch/extension/llm/tokenizer/test/resources/test_tiktoken_invalid_base64.model"
+        "TEST_TIKTOKEN_INVALID_RANK": "$(location //executorch/extension/llm/tokenizer/test/resources/test_tiktoken_invalid_rank.model"
+        "TEST_TIKTOKEN_NO_SPACE": "$(location //executorch/extension/llm/tokenizer/test/resources/test_tiktoken_no_space.model"
+        "TEST_TIKTOKEN_TOKENIZER": "$(location //executorch/extension/llm/tokenizer/test/resources/test_tiktoken_tokenizer.model"
+    },
+
     runtime.python_test(
         name = "test_tokenizer_py",
         srcs = [
@@ -25,9 +33,7 @@ def define_common_targets():
         deps = [
             "//executorch/extension/llm/tokenizer:bpe_tokenizer",
         ],
-        env = {
-            "RESOURCES_PATH": "$(location :resources)/resources",
-        },
+        env = test_env,
     )
 
     runtime.cxx_test(
@@ -44,11 +50,4 @@ def define_common_targets():
         external_deps = [
             "re2",
         ],
-    )
-
-    runtime.filegroup(
-        name = "resources",
-        srcs = native.glob([
-            "resources/**",
-        ]),
     )

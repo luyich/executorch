@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#ifdef EXECUTORCH_FB_BUCK
-#include <TestResourceUtils/TestResourceUtils.h>
-#endif
+// #ifdef EXECUTORCH_FB_BUCK
+// #include <TestResourceUtils/TestResourceUtils.h>
+// #endif
 #include <executorch/extension/llm/tokenizer/bpe_tokenizer.h>
 #include <executorch/runtime/platform/runtime.h>
 #include <gtest/gtest.h>
@@ -26,13 +26,15 @@ class TokenizerExtensionTest : public Test {
   void SetUp() override {
     executorch::runtime::runtime_init();
     tokenizer_ = std::make_unique<BPETokenizer>();
-#ifdef EXECUTORCH_FB_BUCK
-    modelPath_ = facebook::xplat::testing::getPathForTestResource(
-        "resources/test_bpe_tokenizer.bin");
-#else
-    modelPath_ =
-        std::getenv("RESOURCES_PATH") + std::string("/test_bpe_tokenizer.bin");
-#endif
+    modelPath_ = std::getenv("TEST_BPE_TOKENIZER");
+    // #ifdef EXECUTORCH_FB_BUCK
+    //     modelPath_ = facebook::xplat::testing::getPathForTestResource(
+    //         "resources/test_bpe_tokenizer.bin");
+    // #else
+    //     modelPath_ =
+    //         std::getenv("RESOURCES_PATH") +
+    //         std::string("/test_bpe_tokenizer.bin");
+    // #endif
   }
 
   std::unique_ptr<Tokenizer> tokenizer_;
